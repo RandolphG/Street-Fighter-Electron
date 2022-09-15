@@ -27,9 +27,9 @@
   },
   "contributors": [
     {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
+      "name": "Randolph Gordon",
+      "email": "randolph.gordon@poplogics.com",
+      "url": "https://github.com/RandolphG"
     }
   ],
   "main": "./src/main/main.ts",
