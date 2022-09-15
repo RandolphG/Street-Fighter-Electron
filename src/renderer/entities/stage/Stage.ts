@@ -1,5 +1,5 @@
-import { ctx } from '../types';
-import stage from './stage.png'
+import { ctx } from '../../types';
+import { STAGES } from '../../images/_index';
 
 export class Stage {
   name: string;
@@ -8,7 +8,7 @@ export class Stage {
   constructor() {
     this.name = "Balrog's Stage";
     this.image = new Image();
-    this.image.src = stage;
+    this.image.src = STAGES.ken;
   }
   update() {}
 

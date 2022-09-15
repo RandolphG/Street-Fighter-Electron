@@ -4,9 +4,9 @@ import { useEffect } from 'react';
 import { Game } from './Game';
 import { fighterState } from './entities/fighters/utils';
 
-const Hello = () => {
+const Root = () => {
   useEffect(() => {
-    console.log('START -->');
+    console.log('%cGAME INITIALIZED -->', 'color:green;');
     populateMoveDropdown();
     new Game().start();
   });
@@ -42,7 +42,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<Root />} />
       </Routes>
     </Router>
   );
