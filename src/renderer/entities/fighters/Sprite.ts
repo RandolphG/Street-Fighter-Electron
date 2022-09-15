@@ -5,10 +5,10 @@ import {
   isLoaded,
   position,
   time,
-  x
-} from "../../types";
-import { akumaAnimationDelay } from "./akuma/utils";
-import { constants, fighterState } from "./utils";
+  x,
+} from '../../types';
+import { akumaAnimationDelay } from './akuma/utils';
+import { constants, fighterState } from './utils';
 
 /**
  * Fighter Sprite Class
@@ -78,49 +78,46 @@ export class Sprite {
     this.states = {
       [fighterState.IDLE]: {
         init: this.handleIdleInit.bind(this),
-        update: this.handleIdleState.bind(this),
+        update: () => {},
         isValidStateToTransitionFrom: [
           fighterState.IDLE,
+          fighterState.CROUCH_UP,
           fighterState.WALK_FORWARD,
           fighterState.WALK_BACKWARD,
           fighterState.JUMP_FORWARD,
-          fighterState.JUMP_BACKWARD
-        ]
+          fighterState.JUMP_BACKWARD,
+        ],
       },
       [fighterState.WALK_FORWARD]: {
         init: this.handleMoveInit.bind(this),
-        update: this.handleMoveState.bind(this),
+        update: () => {},
         isValidStateToTransitionFrom: [
           fighterState.IDLE,
-          fighterState.WALK_FORWARD,
           fighterState.WALK_BACKWARD,
           fighterState.JUMP_FORWARD,
-          fighterState.JUMP_BACKWARD
-        ]
+          fighterState.WALK_BACKWARD,
+        ],
       },
       [fighterState.WALK_BACKWARD]: {
         init: this.handleMoveInit.bind(this),
-        update: this.handleMoveState.bind(this),
+        update: () => {},
         isValidStateToTransitionFrom: [
           fighterState.IDLE,
           fighterState.WALK_FORWARD,
-          fighterState.WALK_BACKWARD,
-          fighterState.JUMP_FORWARD,
-          fighterState.JUMP_BACKWARD
-        ]
+        ],
       },
       [fighterState.JUMP_UP]: {
         init: this.handleJumpInit.bind(this),
         update: this.handleJumpState.bind(this),
-        isValidStateToTransitionFrom: [fighterState.IDLE]
+        isValidStateToTransitionFrom: [fighterState.IDLE],
       },
       [fighterState.JUMP_FORWARD]: {
         init: this.handleJumpInit.bind(this),
         update: this.handleJumpState.bind(this),
         isValidStateToTransitionFrom: [
           fighterState.IDLE,
-          fighterState.WALK_FORWARD
-        ]
+          fighterState.WALK_FORWARD,
+        ],
       },
       [fighterState.JUMP_BACKWARD]: {
         init: this.handleJumpInit.bind(this),
@@ -128,10 +125,27 @@ export class Sprite {
         isValidStateToTransitionFrom: [
           fighterState.IDLE,
           fighterState.WALK_BACKWARD,
-          fighterState.JUMP_FORWARD,
-          fighterState.JUMP_BACKWARD
-        ]
-      }
+        ],
+      },
+      [fighterState.CROUCH]: {
+        init: () => {},
+        update: () => {},
+        isValidStateToTransitionFrom: [fighterState.CROUCH_DOWN],
+      },
+      [fighterState.CROUCH_UP]: {
+        init: () => {},
+        update: () => {},
+        isValidStateToTransitionFrom: [fighterState.CROUCH],
+      },
+      [fighterState.CROUCH_DOWN]: {
+        init: () => {},
+        update: () => {},
+        isValidStateToTransitionFrom: [
+          fighterState.IDLE,
+          fighterState.WALK_FORWARD,
+          fighterState.WALK_BACKWARD,
+        ],
+      },
     };
 
     this.changeState(fighterState.IDLE);
@@ -139,23 +153,33 @@ export class Sprite {
 
   /**
    * Update animation state.
-   * @return string
+   * @param {string} newState
+   * @return void
    * */
   changeState(newState: string) {
-    if (
-      newState === this.currentState ||    // @ts-ignore
+    this.isNewStatePossible(newState);
 
+    this.currentState = newState;
+    this.animationFrame = 0;
+    // @ts-ignore
+    this.states[this.currentState].init();
+  }
+
+  /**
+   * isNewStatePossible
+   * @description Check if new state is possible otherwise short circuit
+   * @param {string} newState
+   * @return void
+   * */
+  isNewStatePossible(newState: string) {
+    if (
+      newState === this.currentState || // @ts-ignore
       !this.states[newState].isValidStateToTransitionFrom.includes(
         this.currentState
       )
     ) {
       return;
     }
-
-    this.currentState = newState;
-    this.animationFrame = 0;
-    // @ts-ignore
-    this.states[this.currentState].init();
   }
 
   /**
@@ -174,18 +198,18 @@ export class Sprite {
   }
 
   /**
-   * Draw sprite image
+   * draw
+   * @description Draw sprite image
    * @param {CanvasRenderingContext2D } ctx
    * @return void
    * */
   draw(ctx: ctx) {
-    const [frameKey] = akumaAnimationDelay[this.currentState][
-      this.animationFrame
-    ];
-    /*@ts-ignore*/
-    const [[x, y, width, height], [originX, originY]] = this.frames.get(
-      frameKey
-    );
+    const [frameKey] =
+      akumaAnimationDelay[this.currentState][this.animationFrame];
+
+    const [[x, y, width, height], [originX, originY]] =
+      /*@ts-ignore*/
+      this.frames.get(frameKey);
 
     if (this.isLoaded) {
       ctx.scale(this.direction, 1);
@@ -257,7 +281,7 @@ export class Sprite {
   drawDebug(ctx: ctx) {
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = 'white';
     ctx.moveTo(Math.floor(this.position.x) - 5.5, Math.floor(this.position.y));
     ctx.lineTo(Math.floor(this.position.x) + 4.5, Math.floor(this.position.y));
     ctx.moveTo(Math.floor(this.position.x), Math.floor(this.position.y) - 5.5);
@@ -319,8 +343,6 @@ export class Sprite {
     this.velocity.y = 0;
   }
 
-  private handleIdleState() {}
-
   /**
    * Update position X.
    * @return void
@@ -329,21 +351,48 @@ export class Sprite {
     this.velocity.x = this.initialVelocity.x[this.currentState] ?? 0;
   }
 
-  private handleMoveState() {}
-
   /**
    * Update to jump.
    * @return void
    * */
   private handleJumpInit() {
-    this.velocity.y = this.initialVelocity["jump"];
+    this.velocity.y = this.initialVelocity['jump'];
     this.handleMoveInit();
   }
 
+  /**
+   * Update to jump.
+   * @return void
+   * */
   private handleJumpState(time: time) {
     this.velocity.y += this.gravity * time.secondsPassed;
 
     this.isFighterTouchGround();
+  }
+
+  /**
+   * handleCrouchDownState
+   * @description Update to crouch down state.
+   * @return void
+   * */
+  handleCrouchDownState() {
+    // @ts-ignore
+    if (this.animations[this.currentState][this.animationFrame][1] === -2) {
+      this.changeState(fighterState.CROUCH);
+    }
+  }
+
+  /**
+   * handleCrouchUpState
+   * @description Update to crouch up state.
+   * @return void
+   * */
+
+  handleCrouchUpState() {
+    // @ts-ignore
+    if (this.animations[this.currentState][this.animationFrame][1] === -2) {
+      this.changeState(fighterState.CROUCH);
+    }
   }
 
   /**

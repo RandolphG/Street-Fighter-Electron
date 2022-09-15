@@ -4,6 +4,7 @@ import { FPSCounter } from './entities/overlays/FPSCounter';
 import { generalConstants } from './constants/game';
 import icon from './icon.png';
 import { FIGHTERS } from './images/_index';
+
 /**
  * Game Class
  * @description the intialization of game loop and all entities

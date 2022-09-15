@@ -288,6 +288,30 @@ const akumaFrames = new Map([
       [35, 97],
     ],
   ],
+  /* Crouch */
+  [
+    'crouch-01',
+    [
+      [501, 17, 68, 92],
+      [27, 81],
+    ],
+  ],
+  /* Crouch Down */
+  [
+    'crouch-02',
+    [
+      [501, 17, 68, 92],
+      [27, 81],
+    ],
+  ],
+  /* Crouch Up*/
+  [
+    'crouch-03',
+    [
+      [501, 17, 68, 92],
+      [27, 81],
+    ],
+  ],
 ]);
 
 const akumaAnimationDelay: any = {
@@ -344,6 +368,19 @@ const akumaAnimationDelay: any = {
     ['jump-backwards-06', 100],
     ['jump-backwards-07', 65],
     ['jump-backwards-08', -1],
+  ],
+  [fighterState.CROUCH]: [['crouch-01', 0]],
+  [fighterState.CROUCH_DOWN]: [
+    ['crouch-01', 30],
+    ['crouch-02', 30],
+    ['crouch-03', 30],
+    ['crouch-03', -2],
+  ],
+  [fighterState.CROUCH_UP]: [
+    ['crouch-01', 30],
+    ['crouch-02', 30],
+    ['crouch-03', 30],
+    ['crouch-03', -2],
   ],
 };
 
